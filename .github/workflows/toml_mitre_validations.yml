@@ -14,6 +14,8 @@ jobs:
         with:
           python-version: '3.11.5' #anything after 3.10 is compatible
       - run: |
+          pip install requests
+          pip install tomllib
           python development/validation.py
           python development/mitre.py
           
