@@ -11,6 +11,8 @@ headers = {
 mitreData = requests.get(url, headers=headers).json()
 mitreMapped = {} #filtered data for non-deprecated MITRE objects
 
+failure = 0
+
 #def getMapping(mitreData):
 
 for object in mitreData['objects']:
@@ -77,20 +79,21 @@ for file in alert_data:
             # check to ensure MITRE Tactics exist
             if tactic not in mitre_tactic_list:
                 print("The MITRE Tactic supplied does not exist: " + "\"" + tactic + "\" + in " + file)
-
+                failure = 1
             # check to make sure the MITRE Technique ID is valid
             try:
                 if mitreMapped[technique_id]:
                     pass
             except KeyError:
                 print("Invalid MITRE Technique ID: " + "\"" + technique_id + "\"" + " in " + file)
-            
+                failure = 1
             # check to see if the MITRE TID + Name combination is valid
             try:
                 mitre_name = mitreMapped[technique_id]['name']
                 alert_name = line['technique_name']
                 if alert_name != mitre_name:
                     print("MITRE Technique ID and Name Mismatch in " + file + " EXPECTED: " + "\"" + mitre_name + "\"" + " GIVEN: " + "\"" + alert_name + "\"")
+                    failure = 1
             except KeyError:
                 pass
             
@@ -101,6 +104,7 @@ for file in alert_data:
                     alert_name = line['subtechnique_name']
                     if alert_name != mitre_name:
                         print("MITRE Sub-Technique ID and Name Mismatch in " + file + " EXPECTED: " + "\"" + mitre_name + "\"" + " GIVEN: " + "\"" + alert_name + "\"")
+                        failure = 1
             except KeyError:
                 pass
 
@@ -108,5 +112,9 @@ for file in alert_data:
             try:
                 if mitreMapped[technique_id]['deprecated'] == True:
                     print("Deprecated MITRE Technique ID: " + "\"" + technique_id + "\"" + " in " + file)
+                    failure = 1
             except KeyError:
                 pass
+
+if failure != 0:
+    sys.exit(1)

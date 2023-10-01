@@ -2,6 +2,8 @@ import tomllib
 import sys
 import os #from get_filenames.py
 
+failure = 0
+
 for root, dirs, files in os.walk("detections/"): #this is our working folder, needed to switch from \ to /
     for file in files:
             if file.endswith(".toml"):
@@ -32,9 +34,12 @@ for root, dirs, files in os.walk("detections/"): #this is our working folder, ne
 
                     if missing_fields:
                         print("The following fields do not exist in " + file + ": " +str(missing_fields))
-
+                        failure = 1
                     else:
                         print("Validation Passed for: " + file)
+
+if failure !=0:
+     sys.exit(1)
 
 # file = "alert_example.toml" -let's keep this if we need to test against a single alert
 
