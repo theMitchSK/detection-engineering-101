@@ -1,0 +1,33 @@
+[rule]
+author = ["Mitch Kelsey"]
+description = "Detects Nmap and Nikto User Agent strings."
+from = "now-6m" # this is the default value, change as needed
+name = "Web Scanner Activity - Nmap and Nikto"
+# note = "Insert Analysis Notes Here"
+risk_score = 25
+severity = "low"
+# tags = ["Example", "Tag"]
+type = "query"
+rule_id = "00000000-0000-0000-0000-000000000010"
+query = '''
+event.dataset : zeek.http and user_agent.original: *Nmap* or user_agent.original: *Nikto*
+'''
+
+# if type = "threshold"
+# threshold = <something>
+
+[[rule.threat]] # Example Tactic, Technique, Sub-Technique
+framework = "MITRE ATT&CK"
+[[rule.threat.technique]]
+id = "T1046"
+name = "Network Service Discovery"
+reference = "https://attack.mitre.org/techniques/T1046/"
+# [[rule.threat.subtechnique]]
+# id = "Insert Here"
+# name = "Insert Here"
+# reference = "Insert URL"
+
+[[rule.threat.tactic]]
+id = "TA0007"
+name = "Discovery"
+reference = "https://attack.mitre.org/tactics/TA0007/"
